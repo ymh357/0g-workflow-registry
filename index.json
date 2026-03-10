@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-03-10T13:35:54.460Z",
+  "updated_at": "2026-03-10T15:11:45.321Z",
   "packages": [
     {
       "name": "claude-bugfix",
@@ -13,8 +13,7 @@
         "bugfix",
         "debugging"
       ],
-      "engine_compat": "claude",
-      "official": true
+      "engine_compat": "claude"
     },
     {
       "name": "claude-normal",
@@ -27,8 +26,7 @@
         "fullstack",
         "feature"
       ],
-      "engine_compat": "claude",
-      "official": true
+      "engine_compat": "claude"
     },
     {
       "name": "claude-refactor",
@@ -41,8 +39,7 @@
         "refactoring",
         "migration"
       ],
-      "engine_compat": "claude",
-      "official": true
+      "engine_compat": "claude"
     },
     {
       "name": "claude-text",
@@ -55,8 +52,7 @@
         "text-input",
         "quick"
       ],
-      "engine_compat": "claude",
-      "official": true
+      "engine_compat": "claude"
     },
     {
       "name": "constitution",
@@ -68,8 +64,7 @@
         "rules",
         "principles",
         "immutable"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "finishing-branch",
@@ -81,8 +76,7 @@
         "git",
         "cleanup",
         "pr"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "format-on-write",
@@ -95,8 +89,7 @@
         "prettier",
         "eslint",
         "auto-format"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "frontend-philosophy",
@@ -108,8 +101,7 @@
         "frontend",
         "philosophy",
         "best-practices"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "gemini-bugfix",
@@ -122,8 +114,7 @@
         "bugfix",
         "debugging"
       ],
-      "engine_compat": "gemini",
-      "official": true
+      "engine_compat": "gemini"
     },
     {
       "name": "gemini-normal",
@@ -136,8 +127,7 @@
         "fullstack",
         "feature"
       ],
-      "engine_compat": "gemini",
-      "official": true
+      "engine_compat": "gemini"
     },
     {
       "name": "gemini-refactor",
@@ -150,8 +140,7 @@
         "refactoring",
         "migration"
       ],
-      "engine_compat": "gemini",
-      "official": true
+      "engine_compat": "gemini"
     },
     {
       "name": "gemini-text",
@@ -164,8 +153,7 @@
         "text-input",
         "quick"
       ],
-      "engine_compat": "gemini",
-      "official": true
+      "engine_compat": "gemini"
     },
     {
       "name": "nextjs-app-router",
@@ -177,8 +165,7 @@
         "nextjs",
         "app-router",
         "react"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "nihao",
@@ -188,8 +175,7 @@
       "author": "0g-workflow",
       "tags": [
         "nihao"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "performance-audit",
@@ -201,8 +187,7 @@
         "performance",
         "optimization",
         "audit"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "protect-files",
@@ -214,8 +199,7 @@
         "protection",
         "safety",
         "lock-files"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "qa-testing",
@@ -227,8 +211,7 @@
         "testing",
         "qa",
         "tdd"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "react-patterns",
@@ -240,8 +223,7 @@
         "react",
         "patterns",
         "components"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "repo-init",
@@ -253,8 +235,7 @@
         "git",
         "initialization",
         "project-structure"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "s",
@@ -264,8 +245,7 @@
       "author": "0g-workflow",
       "tags": [
         "s"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "safety-guard",
@@ -277,8 +257,7 @@
         "safety",
         "guard",
         "protection"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "security-checklist",
@@ -290,8 +269,7 @@
         "security",
         "checklist",
         "frontend"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "security-review",
@@ -304,8 +282,7 @@
         "review",
         "xss",
         "injection"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "seo-metadata",
@@ -317,8 +294,7 @@
         "seo",
         "metadata",
         "html"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "systematic-debugging",
@@ -330,8 +306,7 @@
         "debugging",
         "investigation",
         "root-cause"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "tailwind-patterns",
@@ -343,8 +318,7 @@
         "tailwind",
         "css",
         "utility"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "tdd-workflow",
@@ -356,8 +330,62 @@
         "tdd",
         "testing",
         "workflow"
+      ]
+    },
+    {
+      "name": "test-claude",
+      "version": "1.0.0",
+      "type": "pipeline",
+      "description": "Minimal test pipeline — Claude SDK, 3 stages: analyze → confirm → implement → QA",
+      "author": "0g-workflow",
+      "tags": [
+        "claude"
       ],
-      "official": true
+      "engine_compat": "claude"
+    },
+    {
+      "name": "test-edge",
+      "version": "1.0.0",
+      "type": "pipeline",
+      "description": "Minimal test pipeline — Claude Edge (PTY), 3 stages: analyze → confirm → implement → QA",
+      "author": "0g-workflow",
+      "tags": [
+        "claude"
+      ],
+      "engine_compat": "claude"
+    },
+    {
+      "name": "test-gemini",
+      "version": "1.0.0",
+      "type": "pipeline",
+      "description": "Minimal test pipeline — Gemini CLI, 3 stages: analyze → confirm → implement → QA",
+      "author": "0g-workflow",
+      "tags": [
+        "gemini"
+      ],
+      "engine_compat": "gemini"
+    },
+    {
+      "name": "test-mixed",
+      "version": "1.0.0",
+      "type": "pipeline",
+      "description": "Test pipeline — Gemini for analysis (cheaper), Claude for implementation (stronger coding)",
+      "author": "0g-workflow",
+      "tags": [
+        "mixed"
+      ],
+      "engine_compat": "mixed"
+    },
+    {
+      "name": "test-web",
+      "version": "1.0.0",
+      "type": "pipeline",
+      "description": "Minimal test pipeline — Claude SDK via web dashboard, 3 stages: analyze → confirm → implement → QA",
+      "author": "0g-workflow",
+      "tags": [
+        "claude"
+      ],
+      "engine_compat": "claude"
     },
     {
       "name": "typescript-strict",
@@ -369,8 +397,7 @@
         "typescript",
         "strict",
         "types"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "web3-check",
@@ -382,8 +409,7 @@
         "web3",
         "security",
         "smart-contract"
-      ],
-      "official": true
+      ]
     },
     {
       "name": "web3-frontend",
@@ -395,8 +421,7 @@
         "web3",
         "wallet",
         "blockchain"
-      ],
-      "official": true
+      ]
     }
   ]
 }

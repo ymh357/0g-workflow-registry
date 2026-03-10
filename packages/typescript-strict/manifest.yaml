@@ -7,6 +7,5 @@ tags:
   - typescript
   - strict
   - types
-official: true
 files:
   - typescript-strict.md

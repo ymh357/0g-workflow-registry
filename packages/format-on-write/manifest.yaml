@@ -8,6 +8,5 @@ tags:
   - prettier
   - eslint
   - auto-format
-official: true
 files:
   - format-on-write.yaml

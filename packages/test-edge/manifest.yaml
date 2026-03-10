@@ -1,0 +1,13 @@
+name: test-edge
+version: 1.0.0
+type: pipeline
+description: "Minimal test pipeline — Claude Edge (PTY), 3 stages: analyze → confirm → implement → QA"
+author: 0g-workflow
+tags:
+  - claude
+engine_compat: claude
+files:
+  - pipeline.yaml
+  - prompts/system/analysis.md
+  - prompts/system/implementation.md
+  - prompts/system/quality-assurance.md

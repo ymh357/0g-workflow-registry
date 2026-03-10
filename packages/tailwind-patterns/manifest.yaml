@@ -7,6 +7,5 @@ tags:
   - tailwind
   - css
   - utility
-official: true
 files:
   - tailwind-patterns.md

@@ -7,6 +7,5 @@ tags:
   - nextjs
   - app-router
   - react
-official: true
 files:
   - nextjs-app-router.md

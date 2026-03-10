@@ -8,7 +8,6 @@ tags:
   - refactoring
   - migration
 engine_compat: claude
-official: true
 dependencies:
   hooks:
     - format-on-write

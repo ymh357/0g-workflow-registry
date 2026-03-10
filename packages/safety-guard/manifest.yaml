@@ -7,6 +7,5 @@ tags:
   - safety
   - guard
   - protection
-official: true
 files:
   - safety-guard.yaml

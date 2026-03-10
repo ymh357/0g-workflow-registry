@@ -18,7 +18,6 @@ interface ManifestSummary {
   author: string;
   tags: string[];
   engine_compat?: string;
-  official?: boolean;
 }
 
 function main(): void {
@@ -52,7 +51,6 @@ function main(): void {
         author: manifest.author as string,
         tags: (manifest.tags as string[]) || [],
         ...(manifest.engine_compat ? { engine_compat: manifest.engine_compat as string } : {}),
-        ...(manifest.official ? { official: true } : {}),
       });
     } catch (err) {
       console.error(`  Error parsing ${dir}/manifest.yaml: ${err}`);

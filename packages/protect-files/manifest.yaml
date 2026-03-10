@@ -7,6 +7,5 @@ tags:
   - protection
   - safety
   - lock-files
-official: true
 files:
   - protect-files.yaml

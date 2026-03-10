@@ -7,6 +7,5 @@ tags:
   - performance
   - optimization
   - audit
-official: true
 files:
   - performance-audit.md

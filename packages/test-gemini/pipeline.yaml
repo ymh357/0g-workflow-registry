@@ -1,0 +1,89 @@
+name: "Test Gemini"
+description: "Minimal test pipeline — Gemini CLI, 3 stages: analyze → confirm → implement → QA"
+engine: gemini
+display:
+  title_path: analysis.title
+stages:
+  - name: analyzing
+    type: agent
+    effort: low
+    max_turns: 10
+    max_budget_usd: 0.1
+    runtime:
+      engine: llm
+      system_prompt: analysis
+      writes:
+        - analysis
+    outputs:
+      analysis:
+        type: object
+        label: Analysis
+        fields:
+          - key: title
+            type: string
+            description: Task title
+          - key: description
+            type: string
+            description: Description
+          - key: repoName
+            type: string
+            description: Repo name
+
+  - name: awaitingConfirm
+    type: human_confirm
+    runtime:
+      engine: human_gate
+      on_reject_to: analyzing
+
+  - name: implementing
+    type: agent
+    effort: low
+    max_turns: 15
+    max_budget_usd: 0.2
+    runtime:
+      engine: llm
+      system_prompt: implementation
+      writes:
+        - implementedFiles
+      reads:
+        analysis: analysis
+    outputs:
+      implementedFiles:
+        type: object
+        label: Implementation
+        fields:
+          - key: files
+            type: string[]
+            description: Changed files
+          - key: summary
+            type: string
+            description: Summary
+
+  - name: qualityAssurance
+    type: agent
+    effort: low
+    max_turns: 10
+    max_budget_usd: 0.1
+    runtime:
+      engine: llm
+      system_prompt: quality-assurance
+      writes:
+        - qaResult
+      reads:
+        analysis: analysis
+        implementedFiles: implementedFiles
+      retry:
+        max_retries: 1
+        back_to: implementing
+    outputs:
+      qaResult:
+        type: object
+        label: QA Report
+        fields:
+          - key: passed
+            type: boolean
+            description: All checks passed
+            display_hint: badge
+          - key: blockers
+            type: string[]
+            description: Blocking issues

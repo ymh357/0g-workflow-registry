@@ -134,7 +134,8 @@ stages:
   - name: techPrep
     type: agent
     notion_label: 技术准备中
-    thinking: enabled
+    thinking:
+      type: enabled
     runtime:
       engine: llm
       system_prompt: techPrep
@@ -229,7 +230,8 @@ stages:
   - name: specGeneration
     type: agent
     notion_label: Spec 中
-    thinking: enabled
+    thinking:
+      type: enabled
     runtime:
       engine: llm
       system_prompt: specGeneration
@@ -274,7 +276,8 @@ stages:
   - name: implementationPlan
     type: agent
     notion_label: 规划中
-    thinking: enabled
+    thinking:
+      type: enabled
     permission_mode: plan
     runtime:
       engine: llm
@@ -323,7 +326,8 @@ stages:
   - name: implementing
     type: agent
     notion_label: 实现中
-    thinking: enabled
+    thinking:
+      type: enabled
     runtime:
       engine: llm
       system_prompt: implementation

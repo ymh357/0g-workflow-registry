@@ -8,7 +8,6 @@ tags:
   - fullstack
   - feature
 engine_compat: claude
-official: true
 dependencies:
   hooks:
     - format-on-write

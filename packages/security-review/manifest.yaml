@@ -8,6 +8,5 @@ tags:
   - review
   - xss
   - injection
-official: true
 files:
   - security-review.md

@@ -1,0 +1,13 @@
+name: test-gemini
+version: 1.0.0
+type: pipeline
+description: "Minimal test pipeline — Gemini CLI, 3 stages: analyze → confirm → implement → QA"
+author: 0g-workflow
+tags:
+  - gemini
+engine_compat: gemini
+files:
+  - pipeline.yaml
+  - prompts/system/analysis.md
+  - prompts/system/implementation.md
+  - prompts/system/quality-assurance.md

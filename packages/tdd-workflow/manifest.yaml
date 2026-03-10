@@ -7,6 +7,5 @@ tags:
   - tdd
   - testing
   - workflow
-official: true
 files:
   - tdd-workflow.md

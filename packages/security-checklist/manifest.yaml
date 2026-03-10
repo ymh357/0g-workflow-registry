@@ -7,6 +7,5 @@ tags:
   - security
   - checklist
   - frontend
-official: true
 files:
   - security-checklist.md

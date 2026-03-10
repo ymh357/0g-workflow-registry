@@ -7,6 +7,5 @@ tags:
   - git
   - initialization
   - project-structure
-official: true
 files:
   - repo-init.md

@@ -107,7 +107,8 @@ stages:
             description: Git worktree path
   - name: techPrep
     type: agent
-    thinking: enabled
+    thinking:
+      type: enabled
     runtime:
       engine: llm
       system_prompt: techPrep
@@ -186,7 +187,8 @@ stages:
         template: design-ready
   - name: specGeneration
     type: agent
-    thinking: enabled
+    thinking:
+      type: enabled
     runtime:
       engine: llm
       system_prompt: specGeneration
@@ -230,7 +232,8 @@ stages:
         template: spec-ready
   - name: implementationPlan
     type: agent
-    thinking: enabled
+    thinking:
+      type: enabled
     permission_mode: plan
     runtime:
       engine: llm
@@ -278,7 +281,8 @@ stages:
         template: impl-plan-ready
   - name: implementing
     type: agent
-    thinking: enabled
+    thinking:
+      type: enabled
     runtime:
       engine: llm
       system_prompt: implementation

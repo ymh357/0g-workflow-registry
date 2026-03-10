@@ -7,6 +7,5 @@ tags:
   - git
   - cleanup
   - pr
-official: true
 files:
   - finishing-branch.md

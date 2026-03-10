@@ -7,6 +7,5 @@ tags:
   - testing
   - qa
   - tdd
-official: true
 files:
   - qa-testing.md
