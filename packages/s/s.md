@@ -1,6 +1,0 @@
----
-id: s
-stages: "*"
----
-
-asdfff

@@ -1,9 +1,0 @@
-name: nihao
-version: 1.0.0
-type: fragment
-description: "Knowledge fragment: nihao"
-author: 0g-workflow
-tags:
-  - nihao
-files:
-  - nihao.md

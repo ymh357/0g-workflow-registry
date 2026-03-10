@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-03-10T15:11:45.321Z",
+  "updated_at": "2026-03-10T15:17:07.076Z",
   "packages": [
     {
       "name": "claude-bugfix",
@@ -168,16 +168,6 @@
       ]
     },
     {
-      "name": "nihao",
-      "version": "1.0.0",
-      "type": "fragment",
-      "description": "Knowledge fragment: nihao",
-      "author": "0g-workflow",
-      "tags": [
-        "nihao"
-      ]
-    },
-    {
       "name": "performance-audit",
       "version": "1.0.0",
       "type": "skill",
@@ -235,16 +225,6 @@
         "git",
         "initialization",
         "project-structure"
-      ]
-    },
-    {
-      "name": "s",
-      "version": "1.0.0",
-      "type": "fragment",
-      "description": "Knowledge fragment: s",
-      "author": "0g-workflow",
-      "tags": [
-        "s"
       ]
     },
     {
