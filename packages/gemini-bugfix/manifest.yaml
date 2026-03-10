@@ -1,0 +1,22 @@
+name: gemini-bugfix
+version: 1.0.0
+type: pipeline
+description: Bug investigation pipeline using Gemini CLI with systematic reproduction and root cause analysis
+author: 0g-workflow
+tags:
+  - gemini
+  - bugfix
+  - debugging
+engine_compat: gemini
+official: true
+dependencies:
+  hooks:
+    - format-on-write
+  skills:
+    - security-review
+files:
+  - pipeline.yaml
+  - prompts/system/analysis.md
+  - prompts/system/implementation.md
+  - prompts/system/investigation.md
+  - prompts/system/quality-assurance.md

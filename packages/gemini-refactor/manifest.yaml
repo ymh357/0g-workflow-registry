@@ -1,0 +1,24 @@
+name: gemini-refactor
+version: 1.0.0
+type: pipeline
+description: Refactoring and migration pipeline using Gemini CLI with impact analysis and incremental implementation
+author: 0g-workflow
+tags:
+  - gemini
+  - refactoring
+  - migration
+engine_compat: gemini
+official: true
+dependencies:
+  hooks:
+    - format-on-write
+  skills:
+    - security-review
+    - performance-audit
+files:
+  - pipeline.yaml
+  - prompts/system/analysis.md
+  - prompts/system/impact-analysis.md
+  - prompts/system/implementation.md
+  - prompts/system/migration-plan.md
+  - prompts/system/quality-assurance.md

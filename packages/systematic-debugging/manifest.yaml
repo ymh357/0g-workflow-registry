@@ -1,0 +1,12 @@
+name: systematic-debugging
+version: 1.0.0
+type: skill
+description: Systematic debugging methodology with reproduction and root cause analysis
+author: 0g-workflow
+tags:
+  - debugging
+  - investigation
+  - root-cause
+official: true
+files:
+  - systematic-debugging.md

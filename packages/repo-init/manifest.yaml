@@ -1,0 +1,12 @@
+name: repo-init
+version: 1.0.0
+type: fragment
+description: Repository initialization guidelines and project structure
+author: 0g-workflow
+tags:
+  - git
+  - initialization
+  - project-structure
+official: true
+files:
+  - repo-init.md

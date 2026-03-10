@@ -1,0 +1,12 @@
+name: protect-files
+version: 1.0.0
+type: hook
+description: Prevent modifications to protected files (lock files, generated code, etc.)
+author: 0g-workflow
+tags:
+  - protection
+  - safety
+  - lock-files
+official: true
+files:
+  - protect-files.yaml

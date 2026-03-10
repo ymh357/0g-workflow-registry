@@ -1,0 +1,13 @@
+name: security-review
+version: 1.0.0
+type: skill
+description: Review code changes for security vulnerabilities (XSS, injection, secrets, auth)
+author: 0g-workflow
+tags:
+  - security
+  - review
+  - xss
+  - injection
+official: true
+files:
+  - security-review.md

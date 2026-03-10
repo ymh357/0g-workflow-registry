@@ -1,0 +1,12 @@
+name: constitution
+version: 1.0.0
+type: fragment
+description: Immutable project rules and coding principles
+author: 0g-workflow
+tags:
+  - rules
+  - principles
+  - immutable
+official: true
+files:
+  - constitution.md

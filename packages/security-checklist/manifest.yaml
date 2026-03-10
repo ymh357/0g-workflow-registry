@@ -1,0 +1,12 @@
+name: security-checklist
+version: 1.0.0
+type: fragment
+description: Security checklist for frontend applications
+author: 0g-workflow
+tags:
+  - security
+  - checklist
+  - frontend
+official: true
+files:
+  - security-checklist.md

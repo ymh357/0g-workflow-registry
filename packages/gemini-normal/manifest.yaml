@@ -1,0 +1,31 @@
+name: gemini-normal
+version: 1.0.0
+type: pipeline
+description: Full-stack frontend pipeline using Gemini CLI for sequential implementation
+author: 0g-workflow
+tags:
+  - gemini
+  - fullstack
+  - feature
+engine_compat: gemini
+official: true
+dependencies:
+  hooks:
+    - format-on-write
+    - safety-guard
+    - protect-files
+  skills:
+    - security-review
+    - performance-audit
+    - web3-check
+    - systematic-debugging
+    - finishing-branch
+files:
+  - pipeline.yaml
+  - prompts/global-constraints.md
+  - prompts/system/analysis.md
+  - prompts/system/implementation-plan.md
+  - prompts/system/implementation.md
+  - prompts/system/quality-assurance.md
+  - prompts/system/spec-generation.md
+  - prompts/system/tech-prep.md

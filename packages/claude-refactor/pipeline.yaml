@@ -1,0 +1,302 @@
+# TODO: Consider a template mechanism to reduce duplication across pipeline configs
+name: "Claude Refactor — Large-Scale Restructuring"
+description: "Refactoring and migration pipeline using Claude with impact analysis and incremental implementation"
+engine: claude
+use_cases:
+  - "Large-scale code refactoring"
+  - "Framework or library migrations"
+  - "Architecture restructuring"
+  - "Dependency major version upgrades"
+display:
+  title_path: analysis.title
+  completion_summary_path: prUrl
+hooks:
+  - format-on-write
+skills:
+  - security-review
+  - performance-audit
+claude_md:
+  global: global.md
+stages:
+  - name: analyzing
+    type: agent
+    runtime:
+      engine: llm
+      system_prompt: analysis
+      writes:
+        - analysis
+    on_complete:
+      notify: analysis_complete
+    outputs:
+      analysis:
+        type: object
+        label: Refactor Analysis
+        fields:
+          - key: title
+            type: string
+            description: Refactoring title
+          - key: description
+            type: string
+            description: Detailed description of the refactoring goal
+          - key: priority
+            type: string
+            description: Priority level (P0-P3)
+          - key: scope
+            type: string
+            description: Scope assessment (narrow, moderate, broad, codebase-wide)
+          - key: risks
+            type: string[]
+            description: Identified risks and concerns
+          - key: affectedFiles
+            type: string[]
+            description: Files likely to be modified
+          - key: repoName
+            type: string
+            description: Target repository name
+          - key: isNewRepo
+            type: boolean
+            description: Whether a new repo needs to be created
+    effort: medium
+    max_turns: 25
+    max_budget_usd: 2
+  - name: awaitingTicketConfirm
+    type: human_confirm
+    runtime:
+      engine: human_gate
+      on_reject_to: error
+  - name: createBranch
+    type: script
+    runtime:
+      engine: script
+      script_id: create_branch
+      reads:
+        title: analysis.title
+      writes:
+        - branch
+  - name: creatingWorktree
+    type: script
+    runtime:
+      engine: script
+      script_id: git_worktree
+      writes:
+        - worktreePath
+      reads:
+        repoName: analysis.repoName
+    outputs:
+      worktreePath:
+        type: object
+        label: Worktree Path
+        hidden: true
+        fields:
+          - key: worktreePath
+            type: string
+            description: Path to git worktree
+  - name: impactAnalysis
+    type: agent
+    runtime:
+      engine: llm
+      system_prompt: impact-analysis
+      writes:
+        - impactReport
+      reads:
+        analysis: analysis
+    outputs:
+      impactReport:
+        type: object
+        label: Impact Analysis
+        fields:
+          - key: totalFilesAffected
+            type: number
+            description: Total number of files that need changes
+          - key: directChanges
+            type: string[]
+            description: Files requiring direct modification
+          - key: cascadingChanges
+            type: string[]
+            description: Files affected by cascading dependency changes
+          - key: breakingChanges
+            type: string[]
+            description: Changes that alter public APIs or behavior
+          - key: testImpact
+            type: string
+            description: Summary of test files that need updating
+          - key: riskLevel
+            type: string
+            description: Overall risk level (low, medium, high, critical)
+          - key: rollbackStrategy
+            type: string
+            description: How to safely rollback if issues arise
+    effort: medium
+    max_turns: 35
+    max_budget_usd: 3
+    mcps:
+      - context7
+  - name: awaitingImpactConfirm
+    type: human_confirm
+    runtime:
+      engine: human_gate
+      notify:
+        type: slack
+        template: impact-ready
+  - name: migrationPlan
+    type: agent
+    runtime:
+      engine: llm
+      system_prompt: migration-plan
+      writes:
+        - migrationPlan
+      reads:
+        analysis: analysis
+        impactReport: impactReport
+      disallowed_tools:
+        - Edit
+        - Write
+        - NotebookEdit
+        - Bash
+    outputs:
+      migrationPlan:
+        type: object
+        label: Migration Plan
+        fields:
+          - key: plan
+            type: markdown
+            description: Step-by-step migration plan with ordering constraints
+          - key: phases
+            type: string[]
+            description: Ordered phases of the migration
+          - key: parallelGroups
+            type: string[]
+            description: Groups of files that can be migrated in parallel
+          - key: verificationPoints
+            type: string[]
+            description: Points where tests should be run to verify correctness
+          - key: estimatedFiles
+            type: number
+            description: Estimated number of files to modify
+    effort: medium
+    max_turns: 30
+    max_budget_usd: 2
+    mcps:
+      - context7
+  - name: awaitingPlanConfirm
+    type: human_confirm
+    runtime:
+      engine: human_gate
+      notify:
+        type: slack
+        template: migration-plan-ready
+  - name: implementing
+    type: agent
+    runtime:
+      engine: llm
+      system_prompt: implementation
+      writes:
+        - implementedFiles
+      reads:
+        analysis: analysis
+        impactReport: impactReport
+        migrationPlan: migrationPlan
+      agents:
+        file-migrator:
+          description: Migrates a single file or module according to the migration plan. Use for parallel file migration.
+          prompt: You are a focused code migrator. Given the migration plan and target file, apply the required refactoring. Preserve behavior exactly — only change structure. Run relevant tests after changes.
+          model: sonnet
+          maxTurns: 25
+        test-updater:
+          description: Updates test files to match refactored code. Use after migrating source files.
+          prompt: Update the specified test files to match the refactored source code. Tests must still verify the same behavior. Run tests to confirm they pass.
+          tools:
+            - Read
+            - Grep
+            - Glob
+            - Bash
+            - Edit
+            - Write
+          model: sonnet
+          maxTurns: 20
+    outputs:
+      implementedFiles:
+        type: object
+        label: Migration Implementation
+        fields:
+          - key: files
+            type: string[]
+            description: List of files created or modified
+          - key: summary
+            type: string
+            description: Summary of refactoring changes applied
+          - key: phasesCompleted
+            type: string[]
+            description: Migration phases completed
+    effort: high
+    max_turns: 120
+    max_budget_usd: 10
+    mcps:
+      - context7
+  - name: qualityAssurance
+    type: agent
+    runtime:
+      engine: llm
+      system_prompt: quality-assurance
+      writes:
+        - qaResult
+      reads:
+        analysis: analysis
+        impactReport: impactReport
+        implementedFiles: implementedFiles
+      retry:
+        max_retries: 2
+        back_to: implementing
+    outputs:
+      qaResult:
+        type: object
+        label: QA Report
+        fields:
+          - key: passed
+            type: boolean
+            description: Whether all checks passed
+            display_hint: badge
+          - key: buildPassed
+            type: boolean
+            description: Whether the build succeeded
+            display_hint: badge
+          - key: testsPassed
+            type: boolean
+            description: Whether tests passed
+            display_hint: badge
+          - key: behaviorPreserved
+            type: boolean
+            description: Whether all existing behavior is preserved
+            display_hint: badge
+          - key: blockers
+            type: string[]
+            description: List of blocking issues
+          - key: warnings
+            type: string[]
+            description: List of non-blocking warnings
+          - key: prComment
+            type: string
+            description: Markdown summary for the PR comment
+    effort: medium
+    max_turns: 20
+    max_budget_usd: 2
+    mcps: []
+  - name: prCreation
+    type: script
+    runtime:
+      engine: script
+      script_id: pr_creation
+      writes:
+        - prUrl
+      reads:
+        analysis: analysis
+        qaResult: qaResult
+    outputs:
+      prUrl:
+        type: object
+        label: Pull Request
+        fields:
+          - key: prUrl
+            type: string
+            description: GitHub PR URL
+            display_hint: link

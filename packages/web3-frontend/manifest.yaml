@@ -1,0 +1,12 @@
+name: web3-frontend
+version: 1.0.0
+type: fragment
+description: Web3 frontend integration patterns (wallet, contracts, chains)
+author: 0g-workflow
+tags:
+  - web3
+  - wallet
+  - blockchain
+official: true
+files:
+  - web3-frontend.md

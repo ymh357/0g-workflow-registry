@@ -1,0 +1,12 @@
+name: frontend-philosophy
+version: 1.0.0
+type: fragment
+description: Frontend development philosophy and best practices
+author: 0g-workflow
+tags:
+  - frontend
+  - philosophy
+  - best-practices
+official: true
+files:
+  - frontend-philosophy.md

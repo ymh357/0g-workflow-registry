@@ -1,0 +1,422 @@
+# TODO: Consider a template mechanism to reduce duplication across pipeline configs
+name: "Gemini Normal — Large Frontend Projects"
+description: "Full-stack frontend pipeline using Gemini CLI for sequential implementation"
+engine: gemini
+display:
+  title_path: analysis.title
+  completion_summary_path: prUrl
+integrations:
+  notion_page_id_path: notionPageId
+hooks:
+  - format-on-write
+  - safety-guard
+  - protect-files
+skills:
+  - security-review
+  - performance-audit
+  - web3-check
+  - systematic-debugging
+  - finishing-branch
+use_cases:
+  - "New feature development"
+  - "Large-scale UI projects"
+  - "Gemini-powered sequential implementation"
+gemini_md:
+  global: global.md
+stages:
+  - name: analyzing
+    type: agent
+    notion_label: 分析中
+    runtime:
+      engine: llm
+      system_prompt: analysis
+      writes:
+        - analysis
+      enabled_steps_path: analysis.enabledSteps
+    on_complete:
+      notify: analysis_complete
+    outputs:
+      analysis:
+        type: object
+        label: Task Analysis
+        fields:
+          - key: title
+            type: string
+            description: Task title
+          - key: description
+            type: string
+            description: Task description
+          - key: priority
+            type: string
+            description: Priority (P0-P3)
+          - key: estimatedDays
+            type: number
+            description: Estimated days
+          - key: risks
+            type: string[]
+            description: Identified risks
+          - key: affectedFiles
+            type: string[]
+            description: Files likely to change
+          - key: repoName
+            type: string
+            description: Target repo name
+          - key: isNewRepo
+            type: boolean
+            description: New repo needed
+          - key: enabledSteps
+            type: string[]
+            description: Enabled workflow steps
+          - key: summary
+            type: markdown
+            description: Analysis summary
+          - key: decisions
+            type: markdown
+            description: Decisions and rationale
+    effort: medium
+    max_turns: 30
+    max_budget_usd: 2
+    # mcps:
+    #   - notion  # Uncomment when Notion Integration Token is available
+  - name: awaitingTicketConfirm
+    type: human_confirm
+    runtime:
+      engine: human_gate
+      on_reject_to: analyzing
+  - name: createBranch
+    type: script
+    runtime:
+      engine: script
+      script_id: create_branch
+      reads:
+        title: analysis.title
+      writes:
+        - branch
+  # TODO: Uncomment registering stage when Gemini supports Notion integration
+  # - name: registering
+  #   type: script
+  #   notion_label: 技术准备中
+  #   runtime:
+  #     engine: script
+  #     script_id: notion_sync
+  #     writes:
+  #       - notionPageId
+  #     reads:
+  #       analysis: analysis
+  #     args:
+  #       notion_status_label: 技术准备中
+  #   outputs:
+  #     notionPageId:
+  #       type: object
+  #       label: Notion Page ID
+  #       hidden: true
+  #       fields:
+  #         - key: notionPageId
+  #           type: string
+  #           description: Notion page ID
+  - name: creatingWorktree
+    type: script
+    notion_label: 技术准备中
+    runtime:
+      engine: script
+      script_id: git_worktree
+      writes:
+        - worktreePath
+      reads:
+        repoName: analysis.repoName
+    outputs:
+      worktreePath:
+        type: object
+        label: Worktree Path
+        hidden: true
+        fields:
+          - key: worktreePath
+            type: string
+            description: Git worktree path
+  - name: techPrep
+    type: agent
+    notion_label: 技术准备中
+    runtime:
+      engine: llm
+      system_prompt: techPrep
+      writes:
+        - techContext
+      reads:
+        analysis: analysis
+      available_steps:
+        - key: figma
+          label: Figma design extraction
+        - key: v0
+          label: v0 UI draft
+        - key: apiReview
+          label: API documentation review
+    outputs:
+      techContext:
+        type: object
+        label: Technical Design
+        fields:
+          - key: renderStrategy
+            type: string
+            description: Render strategy
+          - key: dataFetching
+            type: string
+            description: Data fetching approach
+          - key: componentBoundaries
+            type: string[]
+            description: Component boundaries
+          - key: apiReviewStatus
+            type: string
+            description: API review status
+          - key: mswMockNeeded
+            type: boolean
+            description: MSW mocking needed
+          - key: designDirection
+            type: string
+            description: Design direction
+          - key: summary
+            type: markdown
+            description: Tech design summary
+          - key: decisions
+            type: markdown
+            description: Decisions and rationale
+    effort: medium
+    max_turns: 40
+    max_budget_usd: 3
+    mcps:
+      - notion
+      - figma
+      - context7
+  - name: awaitingDesignConfirm
+    type: human_confirm
+    runtime:
+      engine: human_gate
+      on_reject_to: techPrep
+      notify:
+        type: slack
+        template: design-ready
+  - name: specGeneration
+    type: agent
+    notion_label: Spec 中
+    runtime:
+      engine: llm
+      system_prompt: specGeneration
+      writes:
+        - specSummary
+      reads:
+        analysis: analysis
+        techContext: techContext
+      available_steps:
+        - key: webmcp
+          label: WebMCP schema generation
+    outputs:
+      specSummary:
+        type: object
+        label: Spec Summary
+        fields:
+          - key: summary
+            type: markdown
+            description: Spec summary
+          - key: decisions
+            type: markdown
+            description: Decisions and rationale
+          - key: componentCount
+            type: number
+            description: Component count
+          - key: testFileCount
+            type: number
+            description: Test file count
+    effort: high
+    max_turns: 50
+    max_budget_usd: 4
+    mcps:
+      - context7
+  - name: awaitingSpecConfirm
+    type: human_confirm
+    runtime:
+      engine: human_gate
+      on_reject_to: specGeneration
+      notify:
+        type: slack
+        template: spec-ready
+  - name: implementationPlan
+    type: agent
+    notion_label: 规划中
+    runtime:
+      engine: llm
+      system_prompt: implementationPlan
+      writes:
+        - implementationPlan
+      reads:
+        analysis: analysis
+        techContext: techContext
+        specSummary: specSummary
+      disallowed_tools:
+        - Edit
+        - Write
+        - NotebookEdit
+        - Bash
+    outputs:
+      implementationPlan:
+        type: object
+        label: Implementation Plan
+        fields:
+          - key: plan
+            type: markdown
+            description: Implementation plan
+          - key: parallelGroups
+            type: string[]
+            description: Parallel file groups
+          - key: estimatedFiles
+            type: number
+            description: Estimated file count
+          - key: decisions
+            type: markdown
+            description: Decisions and rationale
+    effort: medium
+    max_turns: 40
+    max_budget_usd: 2
+    mcps:
+      - context7
+  - name: awaitingImplConfirm
+    type: human_confirm
+    runtime:
+      engine: human_gate
+      on_reject_to: implementationPlan
+      notify:
+        type: slack
+        template: impl-plan-ready
+  - name: implementing
+    type: agent
+    notion_label: 实现中
+    runtime:
+      engine: llm
+      system_prompt: implementation
+      writes:
+        - implementedFiles
+      reads:
+        analysis: analysis
+        techContext: techContext
+        specSummary: specSummary
+        implementationPlan: implementationPlan
+    outputs:
+      implementedFiles:
+        type: object
+        label: Implementation
+        fields:
+          - key: files
+            type: string[]
+            description: Files created or modified
+          - key: summary
+            type: markdown
+            description: Implementation summary
+          - key: decisions
+            type: markdown
+            description: Decisions and rationale
+    effort: high
+    max_turns: 150
+    max_budget_usd: 8
+    mcps:
+      - context7
+  - name: buildGate
+    type: script
+    notion_label: 构建验证中
+    runtime:
+      engine: script
+      script_id: build_gate
+      reads:
+        worktreePath: worktreePath.worktreePath
+      retry:
+        max_retries: 1
+        back_to: implementing
+    outputs:
+      buildGateResult:
+        type: object
+        label: Build Gate
+        hidden: true
+        fields:
+          - key: buildPassed
+            type: boolean
+            description: Build succeeded
+          - key: testsPassed
+            type: boolean
+            description: Tests succeeded
+  - name: qualityAssurance
+    type: agent
+    notion_label: 质量检查中
+    runtime:
+      engine: llm
+      system_prompt: qualityAssurance
+      writes:
+        - qaResult
+      reads:
+        analysis: analysis
+        techContext: techContext
+        specSummary: specSummary
+        implementedFiles: implementedFiles
+      available_steps:
+        - key: perfAnalysis
+          label: Lighthouse performance analysis
+        - key: aiCodeReview
+          label: AI code review
+        - key: visualDiff
+          label: Visual diff (Playwright screenshots)
+      retry:
+        max_retries: 2
+        back_to: implementing
+    outputs:
+      qaResult:
+        type: object
+        label: QA Report
+        fields:
+          - key: passed
+            type: boolean
+            description: All checks passed
+            display_hint: badge
+          - key: buildPassed
+            type: boolean
+            description: Build succeeded
+            display_hint: badge
+          - key: testsPassed
+            type: boolean
+            description: Tests passed
+            display_hint: badge
+          - key: blockers
+            type: string[]
+            description: Blocking issues
+          - key: warnings
+            type: string[]
+            description: Non-blocking warnings
+          - key: prComment
+            type: string
+            description: PR comment markdown
+          - key: summary
+            type: markdown
+            description: QA summary
+          - key: decisions
+            type: markdown
+            description: Decisions and rationale
+    effort: medium
+    max_turns: 15
+    max_budget_usd: 2
+    mcps:
+      - context7
+  - name: prCreation
+    type: script
+    notion_label: PR 中
+    runtime:
+      engine: script
+      script_id: pr_creation
+      writes:
+        - prUrl
+      reads:
+        analysis: analysis
+        qaResult: qaResult
+    outputs:
+      prUrl:
+        type: object
+        label: Pull Request
+        fields:
+          - key: prUrl
+            type: string
+            description: GitHub PR URL
+            display_hint: link

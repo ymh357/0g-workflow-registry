@@ -1,0 +1,12 @@
+name: seo-metadata
+version: 1.0.0
+type: fragment
+description: SEO metadata best practices and implementation patterns
+author: 0g-workflow
+tags:
+  - seo
+  - metadata
+  - html
+official: true
+files:
+  - seo-metadata.md

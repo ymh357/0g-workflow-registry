@@ -1,0 +1,6 @@
+---
+id: nihao
+stages: "*"
+---
+
+#hello

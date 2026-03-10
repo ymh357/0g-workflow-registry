@@ -1,0 +1,232 @@
+# TODO: Consider a template mechanism to reduce duplication across pipeline configs
+name: "Gemini Bugfix — Investigation & Fix"
+description: "Bug investigation pipeline using Gemini CLI with systematic reproduction and root cause analysis"
+engine: gemini
+use_cases:
+  - "Non-trivial bug reports requiring investigation"
+  - "Production issues with unclear root cause"
+  - "Regression bugs across multiple components"
+display:
+  title_path: analysis.title
+  completion_summary_path: prUrl
+hooks:
+  - format-on-write
+skills:
+  - security-review
+gemini_md:
+  global: global.md
+stages:
+  - name: analyzing
+    type: agent
+    runtime:
+      engine: llm
+      system_prompt: analysis
+      writes:
+        - analysis
+    on_complete:
+      notify: analysis_complete
+    outputs:
+      analysis:
+        type: object
+        label: Bug Analysis
+        fields:
+          - key: title
+            type: string
+            description: Bug title summarizing the issue
+          - key: description
+            type: string
+            description: Detailed bug description with reproduction context
+          - key: priority
+            type: string
+            description: Priority level (P0-P3)
+          - key: severity
+            type: string
+            description: Severity (critical, major, minor, cosmetic)
+          - key: affectedFiles
+            type: string[]
+            description: Files likely involved in the bug
+          - key: repoName
+            type: string
+            description: Target repository name
+          - key: isNewRepo
+            type: boolean
+            description: Whether a new repo needs to be created
+    effort: low
+    max_turns: 20
+    max_budget_usd: 1
+  - name: awaitingTicketConfirm
+    type: human_confirm
+    runtime:
+      engine: human_gate
+      on_reject_to: error
+  - name: createBranch
+    type: script
+    runtime:
+      engine: script
+      script_id: create_branch
+      reads:
+        title: analysis.title
+      writes:
+        - branch
+  - name: creatingWorktree
+    type: script
+    runtime:
+      engine: script
+      script_id: git_worktree
+      writes:
+        - worktreePath
+      reads:
+        repoName: analysis.repoName
+    outputs:
+      worktreePath:
+        type: object
+        label: Worktree Path
+        hidden: true
+        fields:
+          - key: worktreePath
+            type: string
+            description: Path to git worktree
+  - name: investigation
+    type: agent
+    runtime:
+      engine: llm
+      system_prompt: investigation
+      writes:
+        - investigationResult
+      reads:
+        analysis: analysis
+    outputs:
+      investigationResult:
+        type: object
+        label: Investigation Report
+        fields:
+          - key: reproduced
+            type: boolean
+            description: Whether the bug was successfully reproduced
+            display_hint: badge
+          - key: rootCause
+            type: string
+            description: Identified root cause of the bug
+          - key: reproductionSteps
+            type: string[]
+            description: Steps to reproduce the bug
+          - key: affectedCodePaths
+            type: string[]
+            description: Code paths involved in the bug
+          - key: proposedFix
+            type: string
+            description: Proposed fix approach
+          - key: riskAssessment
+            type: string
+            description: Risk of the proposed fix (low, medium, high)
+          - key: alternativeFixes
+            type: string[]
+            description: Alternative fix approaches considered
+    effort: medium
+    max_turns: 40
+    max_budget_usd: 3
+    mcps:
+      - context7
+  - name: awaitingFixConfirm
+    type: human_confirm
+    runtime:
+      engine: human_gate
+      notify:
+        type: slack
+        template: fix-plan-ready
+  - name: implementing
+    type: agent
+    runtime:
+      engine: llm
+      system_prompt: implementation
+      writes:
+        - implementedFiles
+      reads:
+        analysis: analysis
+        investigationResult: investigationResult
+    outputs:
+      implementedFiles:
+        type: object
+        label: Fix Implementation
+        fields:
+          - key: files
+            type: string[]
+            description: List of files created or modified
+          - key: summary
+            type: string
+            description: Summary of changes made
+          - key: testsAdded
+            type: number
+            description: Number of regression tests added
+    effort: medium
+    max_turns: 60
+    max_budget_usd: 4
+    mcps:
+      - context7
+  - name: qualityAssurance
+    type: agent
+    runtime:
+      engine: llm
+      system_prompt: quality-assurance
+      writes:
+        - qaResult
+      reads:
+        analysis: analysis
+        investigationResult: investigationResult
+        implementedFiles: implementedFiles
+      retry:
+        max_retries: 2
+        back_to: implementing
+    outputs:
+      qaResult:
+        type: object
+        label: QA Report
+        fields:
+          - key: passed
+            type: boolean
+            description: Whether all checks passed
+            display_hint: badge
+          - key: buildPassed
+            type: boolean
+            description: Whether the build succeeded
+            display_hint: badge
+          - key: testsPassed
+            type: boolean
+            description: Whether tests passed
+            display_hint: badge
+          - key: regressionClear
+            type: boolean
+            description: Whether no regressions were found
+            display_hint: badge
+          - key: blockers
+            type: string[]
+            description: List of blocking issues
+          - key: warnings
+            type: string[]
+            description: List of non-blocking warnings
+          - key: prComment
+            type: string
+            description: Markdown summary for the PR comment
+    effort: low
+    max_turns: 15
+    max_budget_usd: 2
+    mcps: []
+  - name: prCreation
+    type: script
+    runtime:
+      engine: script
+      script_id: pr_creation
+      writes:
+        - prUrl
+      reads:
+        analysis: analysis
+        qaResult: qaResult
+    outputs:
+      prUrl:
+        type: object
+        label: Pull Request
+        fields:
+          - key: prUrl
+            type: string
+            description: GitHub PR URL
+            display_hint: link

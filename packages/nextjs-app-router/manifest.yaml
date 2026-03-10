@@ -1,0 +1,12 @@
+name: nextjs-app-router
+version: 1.0.0
+type: fragment
+description: Next.js App Router patterns and conventions
+author: 0g-workflow
+tags:
+  - nextjs
+  - app-router
+  - react
+official: true
+files:
+  - nextjs-app-router.md

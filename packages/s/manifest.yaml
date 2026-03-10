@@ -1,0 +1,10 @@
+name: s
+version: 1.0.0
+type: fragment
+description: "Knowledge fragment: s"
+author: 0g-workflow
+tags:
+  - s
+official: true
+files:
+  - s.md

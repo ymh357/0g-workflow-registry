@@ -1,0 +1,12 @@
+name: tdd-workflow
+version: 1.0.0
+type: fragment
+description: Test-driven development workflow and methodology
+author: 0g-workflow
+tags:
+  - tdd
+  - testing
+  - workflow
+official: true
+files:
+  - tdd-workflow.md

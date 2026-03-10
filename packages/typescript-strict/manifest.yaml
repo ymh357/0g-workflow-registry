@@ -1,0 +1,12 @@
+name: typescript-strict
+version: 1.0.0
+type: fragment
+description: TypeScript strict mode conventions and type safety patterns
+author: 0g-workflow
+tags:
+  - typescript
+  - strict
+  - types
+official: true
+files:
+  - typescript-strict.md
