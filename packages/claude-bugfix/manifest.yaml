@@ -1,18 +1,10 @@
 name: claude-bugfix
 version: 1.0.0
 type: pipeline
-description: Bug investigation pipeline using Claude with systematic reproduction and root cause analysis
+description: "pipeline: claude-bugfix"
 author: 0g-workflow
 tags:
-  - claude
-  - bugfix
-  - debugging
-engine_compat: claude
-dependencies:
-  hooks:
-    - format-on-write
-  skills:
-    - security-review
+  - pipeline
 files:
   - pipeline.yaml
   - prompts/global-constraints.md
